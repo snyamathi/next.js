@@ -50,6 +50,7 @@ type FetchServerActionResult = {
     cookie: boolean
     paths: string[]
   }
+  error?: string
 }
 
 async function fetchServerAction(
@@ -106,10 +107,9 @@ async function fetchServerAction(
       )
     : undefined
 
-  let isFlightResponse =
-    res.headers.get('content-type') === RSC_CONTENT_TYPE_HEADER
+  const contentType = res.headers.get('content-type')
 
-  if (isFlightResponse) {
+  if (contentType === RSC_CONTENT_TYPE_HEADER) {
     const response: ActionFlightResponse = await createFromFetch(
       Promise.resolve(res),
       {
@@ -136,6 +136,23 @@ async function fetchServerAction(
       revalidatedParts,
     }
   }
+
+  // Handle invalid server action responses
+  if (res.status >= 400) {
+    // The server can respond with a text/plain error message, but we'll fallback to something generic
+    // if there isn't one.
+    const error =
+      contentType === 'text/plain'
+        ? await res.text()
+        : 'An unexpected response was received from the server.'
+
+    return {
+      redirectLocation,
+      revalidatedParts,
+      error: error,
+    }
+  }
+
   return {
     redirectLocation,
     revalidatedParts,
@@ -167,19 +184,23 @@ export function serverActionReducer(
       ? state.nextUrl
       : null
 
-  mutable.inFlightServerAction = fetchServerAction(state, nextUrl, action)
-
-  return mutable.inFlightServerAction.then(
+  return fetchServerAction(state, nextUrl, action).then(
     async ({
       actionResult,
       actionFlightData: flightData,
       redirectLocation,
+      error,
     }) => {
       // Make sure the redirection is a push instead of a replace.
       // Issue: https://github.com/vercel/next.js/issues/53911
       if (redirectLocation) {
         state.pushRef.pendingPush = true
         mutable.pendingPush = true
+      }
+
+      if (error) {
+        reject(error)
+        return state
       }
 
       if (!flightData) {
@@ -206,9 +227,6 @@ export function serverActionReducer(
           state.pushRef.pendingPush
         )
       }
-
-      // Remove cache.data as it has been resolved at this point.
-      mutable.inFlightServerAction = null
 
       if (redirectLocation) {
         const newHref = createHrefFromUrl(redirectLocation, false)
