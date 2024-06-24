@@ -206,7 +206,7 @@
     "@types/ws": "8.2.0",
     "@vercel/ncc": "0.34.0",
     "@vercel/nft": "0.27.1",
-    "@vercel/turbopack-ecmascript-runtime": "https://gitpkg-fork.vercel.sh/vercel/turbo/crates/turbopack-ecmascript-runtime/js?de6887f087208a2086f018468d9c8a3e42cba60f",
+    "@vercel/turbopack-ecmascript-runtime": "https://gitpkg-fork.vercel.sh/vercel/turbo/crates/turbopack-ecmascript-runtime/js?86959d1a3870c357ca437c08fe7782b86d50db22",
     "acorn": "8.11.3",
     "amphtml-validator": "1.0.35",
     "anser": "1.4.9",
