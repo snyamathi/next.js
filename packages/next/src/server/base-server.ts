@@ -96,6 +96,7 @@ import {
   NEXT_DID_POSTPONE_HEADER,
   NEXT_URL,
   NEXT_ROUTER_STATE_TREE,
+  NEXT_BUILD_ID_HEADER,
 } from '../client/components/app-router-headers'
 import type {
   MatchOptions,
@@ -1833,7 +1834,7 @@ export default abstract class Server<
     isAppPath: boolean,
     resolvedPathname: string
   ): void {
-    const baseVaryHeader = `${RSC_HEADER}, ${NEXT_ROUTER_STATE_TREE}, ${NEXT_ROUTER_PREFETCH_HEADER}`
+    const baseVaryHeader = `${RSC_HEADER}, ${NEXT_ROUTER_STATE_TREE}, ${NEXT_ROUTER_PREFETCH_HEADER}, ${NEXT_BUILD_ID_HEADER}`
     const isRSCRequest = getRequestMeta(req, 'isRSCRequest') ?? false
 
     let addedNextUrlToVary = false

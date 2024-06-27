@@ -24,6 +24,7 @@ import {
   RSC_HEADER,
   RSC_CONTENT_TYPE_HEADER,
   NEXT_DID_POSTPONE_HEADER,
+  NEXT_BUILD_ID_HEADER,
 } from '../app-router-headers'
 import { urlToUrlWithoutFlightMarker } from '../app-router'
 import { callServer } from '../../app-call-server'
@@ -56,6 +57,7 @@ export async function fetchServerResponse(
     [NEXT_ROUTER_STATE_TREE]: string
     [NEXT_URL]?: string
     [NEXT_ROUTER_PREFETCH_HEADER]?: '1'
+    [NEXT_BUILD_ID_HEADER]: string
   } = {
     // Enable flight response
     [RSC_HEADER]: '1',
@@ -63,6 +65,7 @@ export async function fetchServerResponse(
     [NEXT_ROUTER_STATE_TREE]: encodeURIComponent(
       JSON.stringify(flightRouterState)
     ),
+    [NEXT_BUILD_ID_HEADER]: currentBuildId,
   }
 
   /**
@@ -84,7 +87,7 @@ export async function fetchServerResponse(
       headers[NEXT_ROUTER_PREFETCH_HEADER] || '0',
       headers[NEXT_ROUTER_STATE_TREE],
       headers[NEXT_URL],
-      currentBuildId,
+      headers[NEXT_BUILD_ID_HEADER],
     ].join(',')
   )
 

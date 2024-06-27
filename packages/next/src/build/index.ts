@@ -148,6 +148,7 @@ import {
   RSC_CONTENT_TYPE_HEADER,
   NEXT_ROUTER_STATE_TREE,
   NEXT_DID_POSTPONE_HEADER,
+  NEXT_BUILD_ID_HEADER,
 } from '../client/components/app-router-headers'
 import { webpackBuild } from './webpack-build'
 import { NextBuildContext, type MappedPages } from './build-context'
@@ -291,6 +292,7 @@ export type RoutesManifest = {
     prefetchHeader: typeof NEXT_ROUTER_PREFETCH_HEADER
     suffix: typeof RSC_SUFFIX
     prefetchSuffix: typeof RSC_PREFETCH_SUFFIX
+    buildIdHeader: typeof NEXT_BUILD_ID_HEADER
   }
   skipMiddlewareUrlNormalize?: boolean
   caseSensitive?: boolean
@@ -1172,12 +1174,13 @@ export default async function build(
               header: RSC_HEADER,
               // This vary header is used as a default. It is technically re-assigned in `base-server`,
               // and may include an additional Vary option for `Next-URL`.
-              varyHeader: `${RSC_HEADER}, ${NEXT_ROUTER_STATE_TREE}, ${NEXT_ROUTER_PREFETCH_HEADER}`,
+              varyHeader: `${RSC_HEADER}, ${NEXT_ROUTER_STATE_TREE}, ${NEXT_ROUTER_PREFETCH_HEADER}, ${NEXT_BUILD_ID_HEADER}`,
               prefetchHeader: NEXT_ROUTER_PREFETCH_HEADER,
               didPostponeHeader: NEXT_DID_POSTPONE_HEADER,
               contentTypeHeader: RSC_CONTENT_TYPE_HEADER,
               suffix: RSC_SUFFIX,
               prefetchSuffix: RSC_PREFETCH_SUFFIX,
+              buildIdHeader: NEXT_BUILD_ID_HEADER,
             },
             skipMiddlewareUrlNormalize: config.skipMiddlewareUrlNormalize,
           } as RoutesManifest
